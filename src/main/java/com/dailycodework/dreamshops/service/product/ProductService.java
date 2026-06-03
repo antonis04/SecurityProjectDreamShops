@@ -1,17 +1,38 @@
 package com.dailycodework.dreamshops.service.product;
 
 import com.dailycodework.dreamshops.exception.ProductNotFoundException;
+import com.dailycodework.dreamshops.model.Category;
 import com.dailycodework.dreamshops.model.Product;
 import com.dailycodework.dreamshops.repository.ProductRepository;
+import com.dailycodework.dreamshops.request.AddProductRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
+@RequiredArgsConstructor
 public class ProductService implements IProductService{
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     @Override
-    public Product addProduct(Product product) {
+    public Product addProduct(AddProductRequest request) {
+        // check if category exists in db
+        // if yes, set it as the new product category
+        // if not, then save it as a new category,
+        //then set it as the new product category
         return null;
+    }
+
+    private Product createProduct(AddProductRequest request, Category category) {
+        return new Product(
+                request.getName(),
+                request.getBrand(),
+                request.getPrice(),
+                request.getInventory(),
+                request.getDescription(),
+                category
+        );
     }
 
     @Override
