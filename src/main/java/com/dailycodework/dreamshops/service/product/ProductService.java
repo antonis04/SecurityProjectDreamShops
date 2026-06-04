@@ -21,10 +21,6 @@ public class ProductService implements IProductService{
 
     @Override
     public Product addProduct(AddProductRequest request) {
-        // check if category exists in db
-        // if yes, set it as the new product category
-        // if not, then save it as a new category,
-        //then set it as the new product category
 
         Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
