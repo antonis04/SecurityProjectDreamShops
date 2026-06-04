@@ -1,6 +1,7 @@
 package com.dailycodework.dreamshops.controllers;
 
 import com.dailycodework.dreamshops.dto.ImageDto;
+import com.dailycodework.dreamshops.exception.ResourceNotFoundException;
 import com.dailycodework.dreamshops.model.Image;
 import com.dailycodework.dreamshops.model.Product;
 import com.dailycodework.dreamshops.response.ApiResponse;
@@ -19,6 +20,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
@@ -39,6 +41,7 @@ public class ImageController {
     }
 
 
+    @GetMapping("/image/download/{imageId}")
     public ResponseEntity<Resource> downloadImage(@PathVariable Long imageId) throws SQLException {
         Image image = imageService.getImageById(imageId);
         ByteArrayResource resource = new ByteArrayResource(image.getImage().getBytes(1, (int) image.getImage().length()));
@@ -48,5 +51,18 @@ public class ImageController {
 
     }
 
+    @PutMapping("/update/{imageId}/update")
+    public ResponseEntity<ApiResponse> updateImage(@PathVariable Long imageId, @RequestBody MultipartFile file) {
 
+        try {
+            Image image = imageService.getImageById(imageId);
+            if(image != null){
+                imageService.updateImage(file, imageId);
+                return ResponseEntity.ok(new ApiResponse("Image updated successfully", null));
+            }
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+        return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ApiResponse("Error updating image", INTERNAL_SERVER_ERROR));
+    }
 }
