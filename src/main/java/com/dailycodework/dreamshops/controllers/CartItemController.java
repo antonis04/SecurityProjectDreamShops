@@ -13,7 +13,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping
+@RequestMapping("${api.prefix}/cartItems")
 
 public class CartItemController {
 
@@ -22,10 +22,14 @@ public class CartItemController {
     private final CartItemService cartItemService;
 
     @PostMapping("/item/add")
-    public ResponseEntity<ApiResponse> addItemToCart(@RequestParam Long cartId,
+    public ResponseEntity<ApiResponse> addItemToCart(@RequestParam(required = false) Long cartId,
                                                      @RequestParam Long productId,
                                                      @RequestParam Integer quantity) {
         try {
+
+            if (cartId == null) {
+              cartId = cartService.initializeNewCart();
+            }
             cartItemService.addItemToCart(cartId, productId, quantity);
             return ResponseEntity.ok(new ApiResponse("Added to cart successfully", null));
         } catch (ResourceNotFoundException e) {
