@@ -1,6 +1,5 @@
 package com.dailycodework.dreamshops.service.cart;
 
-import com.dailycodework.dreamshops.model.Cart;
 import com.dailycodework.dreamshops.model.CartItem;
 
 public interface ICartItemService {
