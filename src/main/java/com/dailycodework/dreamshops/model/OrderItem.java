@@ -27,10 +27,10 @@ public class OrderItem {
     private Product product;
 
 
-    public OrderItem(Order order, int quantity, Product product, BigDecimal price) {
-        this.quantity = quantity;
-        this.product = product;
+    public OrderItem(Order order, Product product, int quantity, BigDecimal price) {
         this.order = order;
+        this.product = product;
+        this.quantity = quantity;
         this.price = price;
 
     }
