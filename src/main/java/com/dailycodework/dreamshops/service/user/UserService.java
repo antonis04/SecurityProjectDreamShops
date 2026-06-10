@@ -16,7 +16,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService{
-    UserRepository userRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
     @Override
