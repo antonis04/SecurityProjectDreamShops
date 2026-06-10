@@ -34,7 +34,6 @@ public class OrderService implements IOrderService {
     @Override
     public Order placeOrder(Long userId) {
         Cart cart = cartService.getCartByUserId(userId);
-
         Order order = createOrder(cart);
         List<OrderItem> orderItemList = createOrderItems(order, cart);
 
@@ -92,7 +91,8 @@ public class OrderService implements IOrderService {
         return orders.stream().map(this :: convertToDto).toList();
     }
 
-    private OrderDto convertToDto(Order order) {
+    @Override
+    public OrderDto convertToDto(Order order) {
         return modelMapper.map(order, OrderDto.class);
     }
 }
