@@ -29,7 +29,7 @@ public class CartItemController {
                                                      @RequestParam Long productId,
                                                      @RequestParam Integer quantity) {
         try {
-                User user = userService.getUserById(1L);
+                User user = userService.getUserById(4L);
                 Cart cart = cartService.initializeNewCart(user);
 
             cartItemService.addItemToCart(cart.getId(), productId, quantity);
