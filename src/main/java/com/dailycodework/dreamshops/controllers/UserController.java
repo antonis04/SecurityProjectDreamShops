@@ -1,52 +1,67 @@
 package com.dailycodework.dreamshops.controllers;
 
 import com.dailycodework.dreamshops.dto.OrderDto;
+import com.dailycodework.dreamshops.exception.AlreadyExistException;
 import com.dailycodework.dreamshops.exception.ResourceNotFoundException;
 import com.dailycodework.dreamshops.model.Order;
+import com.dailycodework.dreamshops.model.User;
+import com.dailycodework.dreamshops.request.CreateUserRequest;
+import com.dailycodework.dreamshops.request.UserUpdateRequest;
 import com.dailycodework.dreamshops.response.ApiResponse;
-import com.dailycodework.dreamshops.service.order.IOrderService;
+import com.dailycodework.dreamshops.service.user.IUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("${api.prefix}/orders")
+@RequestMapping("${api.prefix}/users")
 public class UserController {
 
 
-    private final IOrderService orderService;
+    private final IUserService userService;
 
-    @PostMapping("/order")
-    public ResponseEntity<ApiResponse> createOrder(@RequestParam Long userId) {
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserRequest request) {
         try {
-            Order order = orderService.placeOrder(userId);
-            return ResponseEntity.ok(new ApiResponse("Order placed successfully", order));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ApiResponse("Error placing order ", e.getMessage()));
+            User user = userService.createUser(request);
+            return ResponseEntity.ok(new ApiResponse("User created successfully", user));
+        } catch (AlreadyExistException e) {
+            return ResponseEntity.status(CONFLICT).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
-    @GetMapping("/{orderId}/order")
-    public ResponseEntity<ApiResponse> getOrderById(@PathVariable Long orderId) {
+    @GetMapping("/{userId}/user")
+    public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         try {
-            OrderDto order = orderService.getOrder(orderId);
-            return ResponseEntity.ok(new ApiResponse("Found successfully", order));
+            User user = userService.getUserById(userId);
+            return ResponseEntity.ok(new ApiResponse("Found successfully", user));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("Order not found " ,e.getMessage()));
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Order not found" , e.getMessage()));
         }
     }
 
-    @GetMapping("/{userId}/orders")
-    public ResponseEntity<ApiResponse> getUserOrders(@PathVariable Long userId) {
+    @PutMapping("/{userId}/update")
+    public ResponseEntity<ApiResponse> updateUser(@RequestBody UserUpdateRequest request, @PathVariable Long userId) {
         try {
-            List<OrderDto> order = orderService.getUserOrders(userId);
-            return ResponseEntity.ok(new ApiResponse("Found successfully", order));
+            User user = userService.updateUser(request, userId);
+            return ResponseEntity.ok(new ApiResponse("User updated successfully", user));
         } catch (ResourceNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("User orders not found " ,e.getMessage()));
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/{userId}/delete")
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok(new ApiResponse("User deleted successfully", null));
+        } catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }
     }
 
