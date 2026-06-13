@@ -43,7 +43,7 @@ public class CarController {
     public ResponseEntity<ApiResponse> getTotalAmount(@PathVariable Long cartId) {
         try {
             BigDecimal totalPrice = cartService.getTotalPrice(cartId);
-            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Total price, ", totalPrice));
+            return ResponseEntity.ok(new ApiResponse("Total price", totalPrice));
         } catch (ResourceNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
         }

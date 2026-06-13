@@ -2,6 +2,7 @@ package com.dailycodework.dreamshops.security.jwt;
 
 import com.dailycodework.dreamshops.security.user.ShopUserDetailsService;
 import io.jsonwebtoken.JwtException;
+import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +19,9 @@ import java.io.IOException;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
+    @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
     private ShopUserDetailsService userDetailsService;
 
 
